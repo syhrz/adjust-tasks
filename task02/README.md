@@ -29,34 +29,33 @@ I would like to understand better on how SSL offloading affect performance. So a
 ## Implementation
 
 I'm using a few tools:
-- Vagrant
-- Ansible
+- Vagrant.
+- Ansible for easier configuration management.
 
-With linux as working environment
+I currently run the setup With linux as working environment.
 ```bash
-uname -a                                                                                                                                                       Linux endurance 5.7.9-arch1-1 #1 SMP PREEMPT Thu, 16 Jul 2020 19:34:49 +0000 x86_64 GNU/Linux
+uname -a
+Linux endurance 5.7.9-arch1-1 #1 SMP PREEMPT Thu, 16 Jul 2020 19:34:49 +0000 x86_64 GNU/Linux
 ```
 
-First
-
+First initialize Vagrantfile.
 ```bash
 vagrant init ubuntu/xenial64
 ```
 
-Configure the cpu and memory
+Configure the cpu and memory of the virtual machine by modifying these value in Vagrantfile.
 ```ruby
   vb.memory = 8192
   vb.cpus = 6
 ```
 
-And add steps to install nginx
+And add steps to install nginx in the Vagrantfile.
 ```bash
   apt-get update
   apt-get install -y nginx
 ```
 
 Then do SSH to vagrant to do a bit configuration.
-
 ```bash
 vagrant ssh
 ```
