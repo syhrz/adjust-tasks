@@ -22,8 +22,8 @@ Code will be written in `task01.py`
 
 To run the program simply execute from terminal
 
-```
-python task1.py	
+```bash
+python task01.py	
 
 ```
 
