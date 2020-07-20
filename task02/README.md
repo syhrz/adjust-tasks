@@ -30,7 +30,31 @@ From my point of view some *performance* metrics that are very interesting to mo
 - Time per request and
 - Number of failed requests.
 
-The challenges will be how to find the bottlenecks in the system that will handle 25k rps.
+Some tools to monitor is already build in in the linux. For example:
+```bash
+# monitor the number of tcp connection
+$ ss -s 
+sh-5.0$ ss -s
+Total: 1845
+TCP:   120 (estab 55, closed 35, orphaned 0, timewait 13)
+
+Transport Total     IP        IPv6
+RAW       2         1         1        
+UDP       25        24        1        
+TCP       85        76        9        
+INET      112       101       11       
+FRAG      0         0         0      
+
+# get the memory usage in gigabyte
+$ free -g
+free -g
+              total        used        free      shared  buff/cache   available
+Mem:             62          12          33           1          17          49
+Swap:             0           0           0
+
+
+```
+
 
 Honestly I don't really yet understand on how to measure that so I tried to setup a vm to test.
 
