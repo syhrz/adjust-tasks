@@ -1,4 +1,4 @@
-# Task02 -- WIP
+# Task02
 
 ## Task Description
 
@@ -16,15 +16,21 @@ The server is used for SSL offloading and proxies around 25000 requests per seco
 A few things that still unknown that might help in understanding the metrics:
 - Details of processor specification.
 - Disk I/O speed not present, but seems like SSL offloading more CPU heavy we might not need it.
+- OS and service (nginx / haproxy) configuration.
 
 So I search for E7-4830 in result it is a 8 cores cpu with 16 threads ([source](https://ark.intel.com/content/www/us/en/ark/products/53676/intel-xeon-processor-e7-4830-24m-cache-2-13-ghz-6-40-gt-s-intel-qpi.html)). So in total We will have 48 cores CPU with 96 threds. So the full specs are:
 
-- 48 Cores / 96 threads CPU.
+- 48 Cores threads CPU.
 - 64GB of RAM.
 - 2 TB of HDD
 - 2x10Gbit Network
 
-I would like to understand better on how SSL offloading affect performance. So at first I will create a virtual machine with 1/8 of the server capacity and load test it with around 1/8 of RPS = 3125 rps and see the vm metrics.
+From my point of view some *performance* metrics that are very interesting to monitor are:
+- Latency.
+- Time per request and
+- Number of failed requests.
+
+The challenges will be how to find the bottlenecks in the system that will handle 25k rps.
 
 ## Implementation
 
