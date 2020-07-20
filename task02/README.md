@@ -60,7 +60,8 @@ A long term solution is to run haproxy and enable stats since some important inf
 
 I'm using a few tools:
 - Vagrant.
-- Ansible for easier configuration management.
+- Haproxy.
+- Go for running a simple web server.
 
 I currently run the setup With linux as working environment.
 ```bash
@@ -147,6 +148,24 @@ config.vm.network "forwarded_port", guest: 8080, host: 9080, protocol: "tcp"
 config.vm.network "forwarded_port", guest: 8081, host: 9081, protocol: "tcp"
 ```
 
-From outside the VM we'll be able to hit HAproxy stats by accessing [http://127.0.0.1:8081/stats](http://127.0.0.1:8081/stats)
+for further testing we can do a simple load test to the VM and monitor the stats. in this case I use vegeta.
+```bash
+$ echo "POST http://127.0.0.1:8080/hello" | \
+  vegeta -cpus=8 \
+  attack -duration=30s \
+  -rate=3200 -workers=500  | tee reports.bin | vegeta report
 
-for further testing we can do a simple load test to the VM and monitor the stats.
+Requests      [total, rate, throughput]         96000, 3200.03, 3200.02
+Duration      [total, attack, wait]             30s, 30s, 154.551µs
+Latencies     [min, mean, 50, 90, 95, 99, max]  48.52µs, 111.7µs, 109.992µs, 134.018µs, 142.714µs, 172.991µs, 1.514ms
+Bytes In      [total, mean]                     576000, 6.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:96000  
+```
+
+Since I run it in my local machine the result will be very good and can't reflect the real situation.
+
+By combining a using a few tools like vegeta We'll get some important number like latency and success rate. that can be further
+
+Another active monitoring details also can be found from HAProxy stats by accessing [http://127.0.0.1:8081/stats](http://127.0.0.1:8081/stats)
