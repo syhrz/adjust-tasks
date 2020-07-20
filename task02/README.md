@@ -32,6 +32,8 @@ From my point of view some *performance* metrics that are very interesting to mo
 
 The challenges will be how to find the bottlenecks in the system that will handle 25k rps.
 
+Honestly I don't really yet understand on how to measure that so I tried to setup a vm to test.
+
 ## Implementation
 
 I'm using a few tools:
@@ -53,15 +55,76 @@ Configure the cpu and memory of the virtual machine by modifying these value in 
 ```ruby
   vb.memory = 8192
   vb.cpus = 6
-```
 
-And add steps to install nginx in the Vagrantfile.
-```bash
+# And add steps to install haproxy and golang
   apt-get update
-  apt-get install -y nginx
+  apt-get install -y haproxy golang-go
 ```
 
 Then do SSH to vagrant to do a bit configuration.
 ```bash
 vagrant ssh
 ```
+
+I run a simple web server.
+```bash
+$ go run simple-web.go &
+```
+
+try to curl
+```bash
+$ curl localhost:8090/hello
+hello
+```
+
+Inside the vagrant I add these configuration
+```
+...
+frontend local_server
+    bind localhost:8080
+    mode http
+    default_backend local_web_server
+
+backend local_web_server
+    mode http
+    balance roundrobin
+    option forwardfor
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    option httpchk HEAD / HTTP/1.1rnHost:localhost
+    server localhost 127.0.0.1:8090
+
+listen stats
+    bind 127.0.0.1:8081
+    mode http
+    stats enable
+    stats hide-version
+    stats realm Haproxy\ Statistics
+    stats uri /
+```
+
+Then try to restart HAProxy
+```
+$ sudo systemctl restart haproxy.service 
+
+# Try to access the web server via haproxy
+$ curl localhost:8080/hello
+hello
+
+# Try to access stats
+$ curl localhost:8081/stats
+<a long http response>
+
+# Then exit the virtual machine
+exit
+```
+
+Update the Vagrant to do port forwarding so it can be accessed from outside the VM.
+```ruby
+config.vm.network "forwarded_port", guest: 8080, host: 9080, protocol: "tcp"
+config.vm.network "forwarded_port", guest: 8081, host: 9081, protocol: "tcp"
+```
+
+From outside the VM we'll be able to hit HAproxy stats by accessing [http://127.0.0.1:8081/stats](http://127.0.0.1:8081/stats)
+
+for further testing we can do a simple load test to the VM and monitor the stats.

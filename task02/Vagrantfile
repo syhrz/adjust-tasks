@@ -8,9 +8,12 @@ Vagrant.configure("2") do |config|
      vb.memory = "8192"
      vb.cpus = 6
   end
+
+  config.vm.network "forwarded_port", guest: 8080, host: 9080, protocol: "tcp"
+  config.vm.network "forwarded_port", guest: 8081, host: 9081, protocol: "tcp"
   
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y haproxy
+    apt-get install -y haproxy golang-go
   SHELL
 end
