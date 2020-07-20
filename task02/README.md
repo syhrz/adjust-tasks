@@ -51,12 +51,10 @@ free -g
               total        used        free      shared  buff/cache   available
 Mem:             62          12          33           1          17          49
 Swap:             0           0           0
-
-
 ```
 
+A long term solution is to run haproxy and enable stats since some important information already there and can be monitor via web. I'd try to setup a simple service with haproxy in front to monitor the incoming requests.
 
-Honestly I don't really yet understand on how to measure that so I tried to setup a vm to test.
 
 ## Implementation
 
