@@ -23,8 +23,17 @@ Code will be written in `task01.py`
 To run the program simply execute from terminal
 
 ```bash
-python task01.py	
-
+$ python task01.py
+9
+4
+10
+5
+7
+1
+6
+8
+3
+2
 ```
 
 

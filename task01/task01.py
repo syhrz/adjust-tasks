@@ -9,5 +9,3 @@ while (i > 0):
     print(listofnumber[r])
     listofnumber.remove(listofnumber[r])
     i-=1
-
-
